@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patternavo</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .board {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            margin: auto;
+        }
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid black;
+            transition: transform 0.5s ease-in-out;
+            background-color: transparent;
+            transform-origin: center;
+        }
+        .circle.A { width: 92%; height: 92%; top: 4%; left: 4%; }
+        .circle.B { width: 73%; height: 73%; top: 14%; left: 14%; }
+        .circle.C { width: 54.5%; height: 54.5%; top: 23.5%; left: 23.5%; }
+        .house {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid black;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease-in-out, opacity 0.3s;
+            opacity: 0.8;
+        }
+        .house:hover {
+            transform: scale(1.1);
+            opacity: 1;
+        }
+        .controls {
+            margin-top: 30px;
+        }
+        .arrow {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            background-color: #3b82f6;
+            border: 3px solid black;
+            text-align: center;
+            line-height: 60px;
+            font-size: 28px;
+            cursor: pointer;
+            margin: 10px;
+            user-select: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.2s;
+        }
+        .arrow:hover {
+            background-color: #2563eb;
+        }
+        .status {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .reset-btn:hover {
+            background-color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <h1>Patternavo</h1>
+    <div class="status" id="statusText">Red's Turn</div>
+    <div class="board" id="gameBoard">
+        <div class="circle A" id="circleA"></div>
+        <div class="circle B" id="circleB"></div>
+        <div class="circle C" id="circleC"></div>
+    </div>
+    <div class="controls">
+        <div class="arrow" id="arrowLeft">⬅️</div>
+        <div class="arrow" id="arrowRight">➡️</div>
+        <div class="arrow" id="arrowUp">⬆️</div>
+        <div class="arrow" id="arrowDown">⬇️</div>
+    </div>
+    <button class="reset-btn" id="resetButton">Reset Game</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rotations = { A: 0, B: 0, C: 0 };
+            let currentPlayer = "red"; 
+            const statusText = document.getElementById("statusText");
+
+            function updateStatusText() {
+                statusText.textContent = currentPlayer === "red" ? "Red's Turn" : "Green's Turn";
+                statusText.style.color = currentPlayer;
+            }
+
+            function createHouses() {
+                const circles = { A: "circleA", B: "circleB", C: "circleC" };
+                const positions = { A: 250, B: 195, C: 140 };
+                const angleStep = 360 / 18; 
+                Object.entries(circles).forEach(([circle, id]) => {
+                    const parent = document.getElementById(id);
+                    for (let i = 0; i < 18; i++) {
+                        let house = document.createElement("div");
+                        house.classList.add("house");
+                        let angle = i * angleStep; 
+                        let x = Math.cos(angle * Math.PI / 180) * positions[circle];
+                        let y = Math.sin(angle * Math.PI / 180) * positions[circle];
+                        house.style.left = `calc(50% + ${x-1.5}px - 17px)`;
+                        house.style.top = `calc(50% + ${y-1}px - 17px)`;
+                        house.dataset.circle = circle;
+                        house.dataset.index = i;
+                        house.textContent = i + 1;
+                        house.addEventListener("click", function () {
+                            if (!house.style.backgroundColor) {
+                                house.style.backgroundColor = currentPlayer;
+                                house.style.opacity = "1"; // Smooth fade-in effect
+                                currentPlayer = currentPlayer === "red" ? "green" : "red";
+                                updateStatusText();
+                            }
+                        });
+                        parent.appendChild(house);
+                    }
+                });
+            }
+
+            function rotateCircle(circle, degrees) {
+                rotations[circle] += degrees;
+                document.getElementById(`circle${circle}`).style.transform = `rotate(${rotations[circle]}deg)`;
+            }
+
+            document.getElementById("arrowLeft").addEventListener("click", function() {
+                rotateCircle("C", -20);
+            });
+            
+            document.getElementById("arrowRight").addEventListener("click", function() {
+                rotateCircle("C", 20);
+            });
+            
+            document.getElementById("arrowUp").addEventListener("click", function() {
+                rotateCircle("B", 40);
+                rotateCircle("C", 40);
+            });
+            
+            document.getElementById("arrowDown").addEventListener("click", function() {
+                rotateCircle("B", -40);
+                rotateCircle("C", -40);
+            });
+
+            document.getElementById("resetButton").addEventListener("click", function() {
+                document.querySelectorAll(".house").forEach(house => {
+                    house.style.backgroundColor = "";
+                    house.style.opacity = "0.8"; // Reset opacity
+                });
+                currentPlayer = "red";
+                updateStatusText();
+            });
+
+            createHouses();
+            updateStatusText();
+        });
+    </script>
+</body>
+</html>
