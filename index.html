@@ -13,45 +13,69 @@
             background-color: rgba(255, 255, 255, 0.85);
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            position: relative;
+        }
+        .header {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            text-align: left;
+            font-size: clamp(14px, 3vw, 20px);
+            font-weight: 600;
+            color: #333;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .header .title {
+            display: block;
+            font-size: clamp(18px, 4vw, 24px);
+            font-weight: 700;
+        }
+        .header .title span:nth-child(odd) {
+            color: #ff4d4d; /* Red for P, T, E, N, S */
+        }
+        .header .title span:nth-child(even) {
+            color: #4dff4d; /* Green for A, T, R, I, M */
         }
         .container {
             display: flex;
             flex-direction: row;
-            gap: 30px;
+            gap: 20px;
             max-width: 1200px;
             width: 100%;
-            align-items: flex-start;
+            align-items: center;
+            flex-wrap: wrap;
         }
         .left-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            width: 200px;
+            gap: 10px;
+            width: 180px;
+            min-width: 150px;
         }
         .status {
-            font-size: 24px;
+            font-size: clamp(18px, 5vw, 24px);
             font-weight: 600;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
         .timers {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             width: 100%;
         }
         .timer {
-            font-size: 20px;
+            font-size: clamp(16px, 4vw, 20px);
             font-weight: 500;
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 8px 12px;
+            border-radius: 8px;
             text-align: center;
             width: 100%;
             box-sizing: border-box;
@@ -59,24 +83,25 @@
         }
         .timer.red {
             background: linear-gradient(145deg, #cc6666, #993333);
-            box-shadow: 0 5px 10px rgba(204,102,102,0.4);
+            box-shadow: 0 3px 6px rgba(204,102,102,0.4);
         }
         .timer.green {
             background: linear-gradient(145deg, #66cc66, #339933);
-            box-shadow: 0 5px 10px rgba(102,204,102,0.4);
+            box-shadow: 0 3px 6px rgba(102,204,102,0.4);
         }
         .board {
             position: relative;
-            width: 600px;
-            height: 600px;
+            width: min(600px, 90vw);
+            height: min(600px, 90vw);
             background: radial-gradient(circle, rgba(255,255,255,0.2), rgba(0,0,0,0.1));
             border-radius: 50%;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            margin: 0 auto;
         }
         .circle {
             position: absolute;
             border-radius: 50%;
-            border: 4px solid #fff;
+            border: 3px solid #fff;
             transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
             transform-origin: center;
@@ -86,8 +111,8 @@
         .circle.C { width: 54.5%; height: 54.5%; top: 23.5%; left: 23.5%; }
         .house {
             position: absolute;
-            width: 35px;
-            height: 35px;
+            width: clamp(25px, 6vw, 35px);
+            height: clamp(25px, 6vw, 35px);
             border-radius: 50%;
             background-color: rgba(255,255,255,0.95);
             border: 2px solid #333;
@@ -95,7 +120,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 16px;
+            font-size: clamp(12px, 3vw, 16px);
             font-weight: 700;
             color: #222;
             transition: all 0.3s ease;
@@ -118,27 +143,28 @@
         .controls {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            width: 80px;
+            gap: 10px;
+            width: auto;
+            min-width: 70px;
         }
         .arrow {
-            width: 70px;
-            height: 70px;
+            width: clamp(50px, 15vw, 70px);
+            height: clamp(50px, 15vw, 70px);
             background: linear-gradient(145deg, #facc15, #ea580c);
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             text-align: center;
-            line-height: 70px;
-            font-size: 32px;
+            line-height: clamp(50px, 15vw, 70px);
+            font-size: clamp(24px, 6vw, 32px);
             cursor: pointer;
             color: #fff;
             font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 5px 5px 10px rgba(0,0,0,0.3), -5px -5px 10px rgba(255,255,255,0.1);
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.3), -3px -3px 8px rgba(255,255,255,0.1);
         }
         .arrow:hover:not(.disabled) {
             transform: translateY(-3px);
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.4), -5px -5px 15px rgba(255,255,255,0.2);
+            box-shadow: 5px 5px 12px rgba(0,0,0,0.4), -5px -5px 12px rgba(255,255,255,0.2);
             background: linear-gradient(145deg, #fde047, #f97316);
         }
         .arrow.disabled {
@@ -148,9 +174,8 @@
             transform: translateY(0);
         }
         .reset-btn {
-            margin-top: 20px;
-            padding: 12px 25px;
-            font-size: 18px;
+            padding: 10px 20px;
+            font-size: clamp(14px, 4vw, 18px);
             background: linear-gradient(90deg, #ef4444, #b91c1c);
             color: #fff;
             border: none;
@@ -158,32 +183,86 @@
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(239,68,68,0.4);
+            width: 100%;
+            box-sizing: border-box;
         }
         .reset-btn:hover {
             transform: scale(1.05);
             background: linear-gradient(90deg, #f87171, #dc2626);
             box-shadow: 0 8px 20px rgba(239,68,68,0.6);
         }
+        .computer-toggle {
+            padding: 8px 16px;
+            font-size: clamp(12px, 3vw, 16px);
+            background: linear-gradient(90deg, #4d4dff, #1c1cb9);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(77,77,255,0.4);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .computer-toggle:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #7171f8, #2626dc);
+            box-shadow: 0 8px 20px rgba(77,77,255,0.6);
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
                 align-items: center;
+                gap: 15px;
+            }
+            .left-panel {
+                width: 100%;
+                max-width: 250px;
+                order: 1;
             }
             .board {
-                width: 70vw;
-                height: 70vw;
-                max-width: 500px;
-                max-height: 500px;
+                order: 2;
             }
-            .left-panel, .controls {
+            .controls {
                 width: 100%;
-                max-width: 300px;
+                max-width: 250px;
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                order: 3;
+            }
+            .arrow {
+                margin: 5px;
+            }
+        }
+        @media (max-width: 400px) {
+            body {
+                padding: 5px;
+            }
+            .container {
+                gap: 10px;
+            }
+            .status {
+                margin-bottom: 0;
+            }
+            .timers {
+                gap: 5px;
+            }
+            .header {
+                top: 5px;
+                left: 5px;
             }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="header">
+        FiouriT presents:
+        <span class="title">
+            <span>P</span><span>A</span><span>T</span><span>T</span><span>E</span><span>R</span><span>N</span><span>I</span><span>S</span><span>M</span>
+        </span>
+    </div>
     <div class="container">
         <div class="left-panel">
             <div class="status" id="statusText">Red's Turn</div>
@@ -191,6 +270,8 @@
                 <div class="timer red" id="redTimer">Red: 30:00</div>
                 <div class="timer green" id="greenTimer">Green: 30:00</div>
             </div>
+            <button class="reset-btn" id="resetButton">Reset Game</button>
+            <button class="computer-toggle" id="computerToggle">Computer Mode: Off</button>
         </div>
         <div class="board" id="gameBoard">
             <div class="circle A" id="circleA"></div>
@@ -204,7 +285,6 @@
             <div class="arrow" id="arrowDown">⬇️</div>
         </div>
     </div>
-    <button class="reset-btn" id="resetButton">Reset Game</button>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -216,6 +296,7 @@
             let timers = { red: initialTime, green: initialTime };
             let timerInterval = null;
             let timerStarted = { red: false, green: false };
+            let computerMode = false;
 
             function updateStatusText() {
                 if (awaitingRotation) {
@@ -255,7 +336,13 @@
 
             function createHouses() {
                 const circles = { A: "circleA", B: "circleB", C: "circleC" };
-                const positions = { A: 250, B: 195, C: 140 };
+                const board = document.getElementById("gameBoard");
+                const boardSize = board.offsetWidth || 600;
+                const positions = {
+                    A: boardSize * 0.46,
+                    B: boardSize * 0.365,
+                    C: boardSize * 0.2725
+                };
                 const angleStep = 360 / 18;
                 Object.entries(circles).forEach(([circle, id]) => {
                     const parent = document.getElementById(id);
@@ -263,38 +350,76 @@
                         let house = document.createElement("div");
                         house.classList.add("house");
                         let angle = i * angleStep;
-                        let x = Math.cos(angle * Math.PI / 180) * positions[circle];
-                        let y = Math.sin(angle * Math.PI / 180) * positions[circle];
-                        house.style.left = `calc(50% + ${x-1.5}px - 17px)`;
-                        house.style.top = `calc(50% + ${y-1}px - 17px)`;
+                        let radius = positions[circle];
+                        let x = Math.cos(angle * Math.PI / 180) * radius;
+                        let y = Math.sin(angle * Math.PI / 180) * radius;
+                        let houseSize = Math.min(Math.max(25, window.innerWidth * 0.06), 35);
+                        house.style.left = `calc(50% + ${x}px - ${houseSize / 2}px)`;
+                        house.style.top = `calc(50% + ${y}px - ${houseSize / 2}px)`;
                         house.dataset.circle = circle;
                         house.dataset.index = i;
                         house.textContent = i + 1;
                         house.addEventListener("click", function () {
                             if (!house.style.backgroundColor && !awaitingRotation && timers[currentPlayer] > 0) {
-                                house.style.backgroundColor = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
-                                house.style.opacity = "1";
-                                house.classList.add("claimed");
-                                if (circle === "A") {
-                                    stopTimer();
-                                    currentPlayer = currentPlayer === "red" ? "green" : "red";
-                                    if (!timerStarted[currentPlayer]) {
-                                        timerStarted[currentPlayer] = true;
-                                        startTimer(currentPlayer);
-                                    } else {
-                                        startTimer(currentPlayer);
-                                    }
-                                    updateStatusText();
-                                } else {
-                                    awaitingRotation = circle;
-                                    updateStatusText();
-                                    toggleArrows(circle);
-                                }
+                                claimHouse(house, circle);
                             }
                         });
                         parent.appendChild(house);
                     }
                 });
+            }
+
+            function claimHouse(house, circle) {
+                house.style.backgroundColor = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
+                house.style.opacity = "1";
+                house.classList.add("claimed");
+                if (circle === "A") {
+                    stopTimer();
+                    switchPlayer();
+                } else {
+                    awaitingRotation = circle;
+                    updateStatusText();
+                    toggleArrows(circle);
+                    if (computerMode && currentPlayer === "green") {
+                        setTimeout(computerRotate, 1000); // Computer handles rotation
+                    }
+                }
+            }
+
+            function switchPlayer() {
+                currentPlayer = currentPlayer === "red" ? "green" : "red";
+                if (!timerStarted[currentPlayer]) {
+                    timerStarted[currentPlayer] = true;
+                    startTimer(currentPlayer);
+                } else {
+                    startTimer(currentPlayer);
+                }
+                updateStatusText();
+                if (computerMode && currentPlayer === "green" && !awaitingRotation) {
+                    setTimeout(computerMove, 1000);
+                }
+            }
+
+            function computerMove() {
+                const houses = Array.from(document.querySelectorAll(".house")).filter(h => !h.style.backgroundColor);
+                if (houses.length > 0) {
+                    const house = houses[Math.floor(Math.random() * houses.length)];
+                    claimHouse(house, house.dataset.circle);
+                }
+            }
+
+            function computerRotate() {
+                if (awaitingRotation === "B") {
+                    const direction = Math.random() < 0.5 ? -40 : 40;
+                    rotateCircle("B", direction);
+                    rotateCircle("C", direction);
+                } else if (awaitingRotation === "C") {
+                    const direction = Math.random() < 0.5 ? -20 : 20;
+                    rotateCircle("C", direction);
+                }
+                awaitingRotation = null;
+                stopTimer();
+                switchPlayer();
             }
 
             function rotateCircle(circle, degrees) {
@@ -307,12 +432,12 @@
                 const right = document.getElementById("arrowRight");
                 const up = document.getElementById("arrowUp");
                 const down = document.getElementById("arrowDown");
-                if (circle === "B") {
+                if (circle === "B" && currentPlayer === "red") { // Only enable for Red
                     left.classList.add("disabled");
                     right.classList.add("disabled");
                     up.classList.remove("disabled");
                     down.classList.remove("disabled");
-                } else if (circle === "C") {
+                } else if (circle === "C" && currentPlayer === "red") { // Only enable for Red
                     left.classList.remove("disabled");
                     right.classList.remove("disabled");
                     up.classList.add("disabled");
@@ -326,79 +451,47 @@
             }
 
             document.getElementById("arrowLeft").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
                     rotateCircle("C", -20);
                     awaitingRotation = null;
                     stopTimer();
-                    currentPlayer = currentPlayer === "red" ? "green" : "red";
-                    if (!timerStarted[currentPlayer]) {
-                        timerStarted[currentPlayer] = true;
-                        startTimer(currentPlayer);
-                    } else {
-                        startTimer(currentPlayer);
-                    }
-                    updateStatusText();
-                    toggleArrows(null);
+                    switchPlayer();
                 }
             });
 
             document.getElementById("arrowRight").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
                     rotateCircle("C", 20);
                     awaitingRotation = null;
                     stopTimer();
-                    currentPlayer = currentPlayer === "red" ? "green" : "red";
-                    if (!timerStarted[currentPlayer]) {
-                        timerStarted[currentPlayer] = true;
-                        startTimer(currentPlayer);
-                    } else {
-                        startTimer(currentPlayer);
-                    }
-                    updateStatusText();
-                    toggleArrows(null);
+                    switchPlayer();
                 }
             });
 
             document.getElementById("arrowUp").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
-                    rotateCircle("B", -40); // Swapped to counterclockwise
-                    rotateCircle("C", -40); // Swapped to counterclockwise
+                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                    rotateCircle("B", -40);
+                    rotateCircle("C", -40);
                     awaitingRotation = null;
                     stopTimer();
-                    currentPlayer = currentPlayer === "red" ? "green" : "red";
-                    if (!timerStarted[currentPlayer]) {
-                        timerStarted[currentPlayer] = true;
-                        startTimer(currentPlayer);
-                    } else {
-                        startTimer(currentPlayer);
-                    }
-                    updateStatusText();
-                    toggleArrows(null);
+                    switchPlayer();
                 }
             });
 
             document.getElementById("arrowDown").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
-                    rotateCircle("B", 40); // Swapped to clockwise
-                    rotateCircle("C", 40); // Swapped to clockwise
+                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                    rotateCircle("B", 40);
+                    rotateCircle("C", 40);
                     awaitingRotation = null;
                     stopTimer();
-                    currentPlayer = currentPlayer === "red" ? "green" : "red";
-                    if (!timerStarted[currentPlayer]) {
-                        timerStarted[currentPlayer] = true;
-                        startTimer(currentPlayer);
-                    } else {
-                        startTimer(currentPlayer);
-                    }
-                    updateStatusText();
-                    toggleArrows(null);
+                    switchPlayer();
                 }
             });
 
             document.getElementById("resetButton").addEventListener("click", function() {
                 document.querySelectorAll(".house").forEach(house => {
                     house.style.backgroundColor = "";
-                    house.style.opacity = "0.8";
+                    house.style.opacity = "0.85";
                     house.classList.remove("claimed");
                 });
                 rotations.A = 0;
@@ -417,12 +510,29 @@
                 updateStatusText();
                 updateTimerDisplay();
                 toggleArrows(null);
+                document.querySelectorAll(".house").forEach(house => house.remove());
+                createHouses();
             });
 
-            createHouses();
+            document.getElementById("computerToggle").addEventListener("click", function() {
+                computerMode = !computerMode;
+                this.textContent = `Computer Mode: ${computerMode ? "On" : "Off"}`;
+                if (computerMode && currentPlayer === "green" && !awaitingRotation && timers.green > 0) {
+                    setTimeout(computerMove, 1000);
+                }
+            });
+
+            // Initialize game
             updateStatusText();
             updateTimerDisplay();
             toggleArrows(null);
+            createHouses();
+
+            // Handle resize
+            window.addEventListener("resize", () => {
+                document.querySelectorAll(".house").forEach(house => house.remove());
+                createHouses();
+            });
         });
     </script>
 </body>
