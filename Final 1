@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patternism</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
+            background-size: cover;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            align-items: flex-start;
+        }
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 200px;
+        }
+        .status {
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .timers {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        .timer {
+            font-size: 20px;
+            font-weight: 500;
+            padding: 10px 15px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+            color: #fff;
+        }
+        .timer.red {
+            background: linear-gradient(145deg, #cc6666, #993333);
+            box-shadow: 0 5px 10px rgba(204,102,102,0.4);
+        }
+        .timer.green {
+            background: linear-gradient(145deg, #66cc66, #339933);
+            box-shadow: 0 5px 10px rgba(102,204,102,0.4);
+        }
+        .board {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2), rgba(0,0,0,0.1));
+            border-radius: 50%;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
+            transform-origin: center;
+        }
+        .circle.A { width: 92%; height: 92%; top: 4%; left: 4%; }
+        .circle.B { width: 73%; height: 73%; top: 14%; left: 14%; }
+        .circle.C { width: 54.5%; height: 54.5%; top: 23.5%; left: 23.5%; }
+        .house {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.95);
+            border: 2px solid #333;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            color: #222;
+            transition: all 0.3s ease;
+            opacity: 0.85;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .house:hover {
+            transform: scale(1.15) rotate(5deg);
+            opacity: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        }
+        .house.claimed {
+            animation: pulse 0.5s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80px;
+        }
+        .arrow {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(145deg, #facc15, #ea580c);
+            border: none;
+            border-radius: 15px;
+            text-align: center;
+            line-height: 70px;
+            font-size: 32px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3), -5px -5px 10px rgba(255,255,255,0.1);
+        }
+        .arrow:hover:not(.disabled) {
+            transform: translateY(-3px);
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.4), -5px -5px 15px rgba(255,255,255,0.2);
+            background: linear-gradient(145deg, #fde047, #f97316);
+        }
+        .arrow.disabled {
+            background: #999;
+            cursor: not-allowed;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+            transform: translateY(0);
+        }
+        .reset-btn {
+            margin-top: 20px;
+            padding: 12px 25px;
+            font-size: 18px;
+            background: linear-gradient(90deg, #ef4444, #b91c1c);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(239,68,68,0.4);
+        }
+        .reset-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #f87171, #dc2626);
+            box-shadow: 0 8px 20px rgba(239,68,68,0.6);
+        }
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .board {
+                width: 70vw;
+                height: 70vw;
+                max-width: 500px;
+                max-height: 500px;
+            }
+            .left-panel, .controls {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="status" id="statusText">Red's Turn</div>
+            <div class="timers">
+                <div class="timer red" id="redTimer">Red: 30:00</div>
+                <div class="timer green" id="greenTimer">Green: 30:00</div>
+            </div>
+        </div>
+        <div class="board" id="gameBoard">
+            <div class="circle A" id="circleA"></div>
+            <div class="circle B" id="circleB"></div>
+            <div class="circle C" id="circleC"></div>
+        </div>
+        <div class="controls">
+            <div class="arrow" id="arrowRight">➡️</div>
+            <div class="arrow" id="arrowLeft">⬅️</div>
+            <div class="arrow" id="arrowUp">⬆️</div>
+            <div class="arrow" id="arrowDown">⬇️</div>
+        </div>
+    </div>
+    <button class="reset-btn" id="resetButton">Reset Game</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const rotations = { A: 0, B: 0, C: 0 };
+            let currentPlayer = "red";
+            const statusText = document.getElementById("statusText");
+            let awaitingRotation = null;
+            const initialTime = 30 * 60 * 1000;
+            let timers = { red: initialTime, green: initialTime };
+            let timerInterval = null;
+            let timerStarted = { red: false, green: false };
+
+            function updateStatusText() {
+                if (awaitingRotation) {
+                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}, Rotate ${awaitingRotation === "B" ? "Up/Down" : "Left/Right"}`;
+                } else {
+                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}'s Turn`;
+                }
+                statusText.style.color = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
+            }
+
+            function updateTimerDisplay() {
+                const redTime = Math.max(0, timers.red);
+                const greenTime = Math.max(0, timers.green);
+                document.getElementById("redTimer").textContent = `Red: ${Math.floor(redTime / 60000)}:${String(Math.floor((redTime % 60000) / 1000)).padStart(2, "0")}`;
+                document.getElementById("greenTimer").textContent = `Green: ${Math.floor(greenTime / 60000)}:${String(Math.floor((greenTime % 60000) / 1000)).padStart(2, "0")}`;
+                if (timers[currentPlayer] <= 0) {
+                    clearInterval(timerInterval);
+                    statusText.textContent = `${currentPlayer === "red" ? "Green" : "Red"} Wins! Time's Up!`;
+                    awaitingRotation = "gameOver";
+                    toggleArrows(null);
+                }
+            }
+
+            function startTimer(player) {
+                if (timerInterval) clearInterval(timerInterval);
+                timerInterval = setInterval(() => {
+                    if (timers[player] > 0) {
+                        timers[player] -= 1000;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+
+            function stopTimer() {
+                clearInterval(timerInterval);
+            }
+
+            function createHouses() {
+                const circles = { A: "circleA", B: "circleB", C: "circleC" };
+                const positions = { A: 250, B: 195, C: 140 };
+                const angleStep = 360 / 18;
+                Object.entries(circles).forEach(([circle, id]) => {
+                    const parent = document.getElementById(id);
+                    for (let i = 0; i < 18; i++) {
+                        let house = document.createElement("div");
+                        house.classList.add("house");
+                        let angle = i * angleStep;
+                        let x = Math.cos(angle * Math.PI / 180) * positions[circle];
+                        let y = Math.sin(angle * Math.PI / 180) * positions[circle];
+                        house.style.left = `calc(50% + ${x-1.5}px - 17px)`;
+                        house.style.top = `calc(50% + ${y-1}px - 17px)`;
+                        house.dataset.circle = circle;
+                        house.dataset.index = i;
+                        house.textContent = i + 1;
+                        house.addEventListener("click", function () {
+                            if (!house.style.backgroundColor && !awaitingRotation && timers[currentPlayer] > 0) {
+                                house.style.backgroundColor = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
+                                house.style.opacity = "1";
+                                house.classList.add("claimed");
+                                if (circle === "A") {
+                                    stopTimer();
+                                    currentPlayer = currentPlayer === "red" ? "green" : "red";
+                                    if (!timerStarted[currentPlayer]) {
+                                        timerStarted[currentPlayer] = true;
+                                        startTimer(currentPlayer);
+                                    } else {
+                                        startTimer(currentPlayer);
+                                    }
+                                    updateStatusText();
+                                } else {
+                                    awaitingRotation = circle;
+                                    updateStatusText();
+                                    toggleArrows(circle);
+                                }
+                            }
+                        });
+                        parent.appendChild(house);
+                    }
+                });
+            }
+
+            function rotateCircle(circle, degrees) {
+                rotations[circle] += degrees;
+                document.getElementById(`circle${circle}`).style.transform = `rotate(${rotations[circle]}deg)`;
+            }
+
+            function toggleArrows(circle) {
+                const left = document.getElementById("arrowLeft");
+                const right = document.getElementById("arrowRight");
+                const up = document.getElementById("arrowUp");
+                const down = document.getElementById("arrowDown");
+                if (circle === "B") {
+                    left.classList.add("disabled");
+                    right.classList.add("disabled");
+                    up.classList.remove("disabled");
+                    down.classList.remove("disabled");
+                } else if (circle === "C") {
+                    left.classList.remove("disabled");
+                    right.classList.remove("disabled");
+                    up.classList.add("disabled");
+                    down.classList.add("disabled");
+                } else {
+                    left.classList.add("disabled");
+                    right.classList.add("disabled");
+                    up.classList.add("disabled");
+                    down.classList.add("disabled");
+                }
+            }
+
+            document.getElementById("arrowLeft").addEventListener("click", function() {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
+                    rotateCircle("C", -20);
+                    awaitingRotation = null;
+                    stopTimer();
+                    currentPlayer = currentPlayer === "red" ? "green" : "red";
+                    if (!timerStarted[currentPlayer]) {
+                        timerStarted[currentPlayer] = true;
+                        startTimer(currentPlayer);
+                    } else {
+                        startTimer(currentPlayer);
+                    }
+                    updateStatusText();
+                    toggleArrows(null);
+                }
+            });
+
+            document.getElementById("arrowRight").addEventListener("click", function() {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
+                    rotateCircle("C", 20);
+                    awaitingRotation = null;
+                    stopTimer();
+                    currentPlayer = currentPlayer === "red" ? "green" : "red";
+                    if (!timerStarted[currentPlayer]) {
+                        timerStarted[currentPlayer] = true;
+                        startTimer(currentPlayer);
+                    } else {
+                        startTimer(currentPlayer);
+                    }
+                    updateStatusText();
+                    toggleArrows(null);
+                }
+            });
+
+            document.getElementById("arrowUp").addEventListener("click", function() {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
+                    rotateCircle("B", -40); // Swapped to counterclockwise
+                    rotateCircle("C", -40); // Swapped to counterclockwise
+                    awaitingRotation = null;
+                    stopTimer();
+                    currentPlayer = currentPlayer === "red" ? "green" : "red";
+                    if (!timerStarted[currentPlayer]) {
+                        timerStarted[currentPlayer] = true;
+                        startTimer(currentPlayer);
+                    } else {
+                        startTimer(currentPlayer);
+                    }
+                    updateStatusText();
+                    toggleArrows(null);
+                }
+            });
+
+            document.getElementById("arrowDown").addEventListener("click", function() {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
+                    rotateCircle("B", 40); // Swapped to clockwise
+                    rotateCircle("C", 40); // Swapped to clockwise
+                    awaitingRotation = null;
+                    stopTimer();
+                    currentPlayer = currentPlayer === "red" ? "green" : "red";
+                    if (!timerStarted[currentPlayer]) {
+                        timerStarted[currentPlayer] = true;
+                        startTimer(currentPlayer);
+                    } else {
+                        startTimer(currentPlayer);
+                    }
+                    updateStatusText();
+                    toggleArrows(null);
+                }
+            });
+
+            document.getElementById("resetButton").addEventListener("click", function() {
+                document.querySelectorAll(".house").forEach(house => {
+                    house.style.backgroundColor = "";
+                    house.style.opacity = "0.8";
+                    house.classList.remove("claimed");
+                });
+                rotations.A = 0;
+                rotations.B = 0;
+                rotations.C = 0;
+                document.getElementById("circleA").style.transform = "rotate(0deg)";
+                document.getElementById("circleB").style.transform = "rotate(0deg)";
+                document.getElementById("circleC").style.transform = "rotate(0deg)";
+                currentPlayer = "red";
+                awaitingRotation = null;
+                timers.red = initialTime;
+                timers.green = initialTime;
+                timerStarted.red = false;
+                timerStarted.green = false;
+                stopTimer();
+                updateStatusText();
+                updateTimerDisplay();
+                toggleArrows(null);
+            });
+
+            createHouses();
+            updateStatusText();
+            updateTimerDisplay();
+            toggleArrows(null);
+        });
+    </script>
+</body>
+</html>
