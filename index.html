@@ -14,11 +14,9 @@
             color: #333;
             margin: 0;
             padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             position: relative;
+            display: block; /* Ensure body is a block to allow natural flow */
         }
         .header {
             position: absolute;
@@ -30,16 +28,11 @@
             color: #333;
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        .header .title {
+        .logo {
             display: block;
-            font-size: clamp(18px, 4vw, 24px);
-            font-weight: 700;
-        }
-        .header .title span:nth-child(odd) {
-            color: #ff4d4d; /* Red for P, T, E, N, S */
-        }
-        .header .title span:nth-child(even) {
-            color: #4dff4d; /* Green for A, T, R, I, M */
+            width: clamp(100px, 13.3vw, 133px);
+            height: auto;
+            margin-top: 5px;
         }
         .tagline {
             display: block;
@@ -57,6 +50,7 @@
             width: 100%;
             align-items: center;
             flex-wrap: wrap;
+            margin: 120px auto 20px; /* Add margin to ensure space below header and above instructions */
         }
         .left-panel {
             display: flex;
@@ -217,6 +211,75 @@
             background: linear-gradient(90deg, #7171f8, #2626dc);
             box-shadow: 0 8px 20px rgba(77,77,255,0.6);
         }
+        .dice-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: center;
+        }
+        .dice-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #fff, #ccc);
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .dice-btn:hover:not(.disabled) {
+            transform: scale(1.1);
+            background: linear-gradient(145deg, #f0f0f0, #bbb);
+        }
+        .dice-btn.disabled {
+            background: #999;
+            cursor: not-allowed;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+            transform: none;
+        }
+        .pattern-display {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .pattern-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .pattern-image {
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+            display: block;
+        }
+        .instructions {
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            color: #333;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .instructions h2 {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .instructions p {
+            font-size: clamp(14px, 3vw, 18px);
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+        .instructions img {
+            width: 60px;
+            height: 60px;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -242,6 +305,10 @@
             .arrow {
                 margin: 5px;
             }
+            .dice-container {
+                top: 120px;
+                right: 10px;
+            }
         }
         @media (max-width: 400px) {
             body {
@@ -260,6 +327,26 @@
                 top: 5px;
                 left: 5px;
             }
+            .dice-container {
+                top: 100px;
+                right: 5px;
+            }
+            .dice-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .pattern-image {
+                width: 80px;
+                height: 80px;
+            }
+            .logo {
+                width: clamp(80px, 13.3vw, 107px);
+            }
+            .instructions img {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -267,10 +354,15 @@
 <body>
     <div class="header">
         FiouriT mindstyle
-        <span class="title">
-            <span>P</span><span>A</span><span>T</span><span>T</span><span>E</span><span>R</span><span>N</span><span>I</span><span>S</span><span>M</span>
-        </span>
+        <img class="logo" src="Patternism - Logo.jpg" alt="Patternism Logo">
         <span class="tagline">Logic in Motion...</span>
+    </div>
+    <div class="dice-container">
+        <button class="dice-btn" id="diceButton">🎲</button>
+        <div class="pattern-display" id="patternDisplay">
+            <div class="pattern-number" id="patternNumber">Roll the dice!</div>
+            <img class="pattern-image" id="patternImage" src="" alt="Pattern">
+        </div>
     </div>
     <div class="container">
         <div class="left-panel">
@@ -306,12 +398,48 @@
             let timerInterval = null;
             let timerStarted = { red: false, green: false };
             let computerMode = false;
+            let selectedPattern = null;
+            let gameStarted = false;
+
+            const patternImages = {
+                1: "pattern1.png",
+                2: "pattern2.png",
+                3: "pattern3.png",
+                4: "pattern4.png",
+                5: "pattern5.png",
+                6: "pattern6.png"
+            };
+
+            const targetPatterns = {
+                1: { A: [0, 1, 2], B: [1], C: [0, 1, 2] }, // H shape
+                2: { A: [0], B: [0], C: [0] }, // I shape
+                3: { A: [0], B: [1, 17], C: [2, 16] }, // Arrow toward center
+                4: { A: [2, 16], B: [1, 17], C: [0] }, // Arrow away from center
+                5: { A: [0, 5], B: [0, 5], C: [0, 5] }, // Straight line of 6
+                6: { A: [0, 6, 12], B: [0, 6, 12], C: [0, 6, 12] } // Mercedes-Benz logo
+            };
+
+            function rollDice() {
+                if (!gameStarted) {
+                    selectedPattern = Math.floor(Math.random() * 6) + 1;
+                    updatePatternDisplay();
+                    updateStatusText();
+                }
+            }
+
+            function updatePatternDisplay() {
+                const patternNumber = document.getElementById("patternNumber");
+                const patternImage = document.getElementById("patternImage");
+                patternNumber.textContent = `Pattern ${selectedPattern}`;
+                patternImage.src = patternImages[selectedPattern];
+                patternImage.alt = `Pattern ${selectedPattern}`;
+            }
 
             function updateStatusText() {
                 if (awaitingRotation) {
                     statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}, Rotate ${awaitingRotation === "B" ? "Up/Down" : "Left/Right"}`;
-                } else {
-                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}'s Turn`;
+                } else if (selectedPattern) {
+                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}'s Turn (Pattern ${selectedPattern})`;
                 }
                 statusText.style.color = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
             }
@@ -382,15 +510,18 @@
                 house.style.backgroundColor = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
                 house.style.opacity = "1";
                 house.classList.add("claimed");
+                gameStarted = true;
+                document.getElementById("diceButton").classList.add("disabled");
                 if (circle === "A") {
                     stopTimer();
+                    if (checkWin(currentPlayer)) return;
                     switchPlayer();
                 } else {
                     awaitingRotation = circle;
                     updateStatusText();
                     toggleArrows(circle);
                     if (computerMode && currentPlayer === "green") {
-                        setTimeout(computerRotate, 1000); // Computer handles rotation
+                        setTimeout(computerRotate, 1000);
                     }
                 }
             }
@@ -403,31 +534,112 @@
                 } else {
                     startTimer(currentPlayer);
                 }
+                awaitingRotation = null;
+                toggleArrows(null);
                 updateStatusText();
                 if (computerMode && currentPlayer === "green" && !awaitingRotation) {
                     setTimeout(computerMove, 1000);
                 }
             }
 
+            function evaluateMoveScore(house) {
+                const circle = house.dataset.circle;
+                const index = parseInt(house.dataset.index);
+                const adjustedIndex = getAdjustedIndex(circle, index);
+                const target = targetPatterns[selectedPattern][circle];
+                let score = target.includes(adjustedIndex) ? 2 : 0;
+
+                // Bonus for proximity to existing claimed houses
+                const claimed = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#4dff4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                claimed.forEach(c => {
+                    if (c.circle === circle && Math.abs(c.index - adjustedIndex) <= 2) {
+                        score += 1;
+                    }
+                });
+
+                return score;
+            }
+
             function computerMove() {
                 const houses = Array.from(document.querySelectorAll(".house")).filter(h => !h.style.backgroundColor);
-                if (houses.length > 0) {
+                if (houses.length === 0) return;
+
+                // Evaluate all possible moves and pick the best
+                let bestHouse = null;
+                let bestScore = -1;
+
+                houses.forEach(house => {
+                    const score = evaluateMoveScore(house);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestHouse = house;
+                    }
+                });
+
+                if (bestHouse) {
+                    claimHouse(bestHouse, bestHouse.dataset.circle);
+                } else {
+                    // Fallback to random if no scoring move found (shouldn't happen)
                     const house = houses[Math.floor(Math.random() * houses.length)];
                     claimHouse(house, house.dataset.circle);
                 }
             }
 
             function computerRotate() {
+                if (!awaitingRotation) return;
+
+                const claimedHouses = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#4dff4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                const target = targetPatterns[selectedPattern];
+
+                // Calculate best rotation to align with target pattern
+                let bestRotation = 0;
+                let bestScore = -1;
+
+                const rotationOptions = awaitingRotation === "B" ? [-40, 0, 40] : [-20, 0, 20];
+                rotationOptions.forEach(rotation => {
+                    let tempRotations = { ...rotations };
+                    if (awaitingRotation === "B") {
+                        tempRotations.B += rotation;
+                        tempRotations.C += rotation;
+                    } else {
+                        tempRotations.C += rotation;
+                    }
+
+                    let score = 0;
+                    claimedHouses.forEach(house => {
+                        const adjustedIndex = getAdjustedIndex(house.circle, parseInt(house.dataset?.index || house.index), tempRotations[house.circle]);
+                        if (target[house.circle].includes(adjustedIndex)) {
+                            score += 1;
+                        }
+                    });
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestRotation = rotation;
+                    }
+                });
+
+                // Apply the best rotation
                 if (awaitingRotation === "B") {
-                    const direction = Math.random() < 0.5 ? -40 : 40;
-                    rotateCircle("B", direction);
-                    rotateCircle("C", direction);
+                    rotateCircle("B", bestRotation);
+                    rotateCircle("C", bestRotation);
                 } else if (awaitingRotation === "C") {
-                    const direction = Math.random() < 0.5 ? -20 : 20;
-                    rotateCircle("C", direction);
+                    rotateCircle("C", bestRotation);
                 }
+
                 awaitingRotation = null;
                 stopTimer();
+                if (checkWin(currentPlayer)) return;
                 switchPlayer();
             }
 
@@ -441,12 +653,12 @@
                 const right = document.getElementById("arrowRight");
                 const up = document.getElementById("arrowUp");
                 const down = document.getElementById("arrowDown");
-                if (circle === "B" && currentPlayer === "red") { // Only enable for Red
+                if (circle === "B") {
                     left.classList.add("disabled");
                     right.classList.add("disabled");
                     up.classList.remove("disabled");
                     down.classList.remove("disabled");
-                } else if (circle === "C" && currentPlayer === "red") { // Only enable for Red
+                } else if (circle === "C") {
                     left.classList.remove("disabled");
                     right.classList.remove("disabled");
                     up.classList.add("disabled");
@@ -459,40 +671,156 @@
                 }
             }
 
+            function getAdjustedIndex(circle, index, tempRotation = rotations[circle]) {
+                const rotation = tempRotation;
+                const step = 360 / 18;
+                let adjusted = (index + Math.round(rotation / step)) % 18;
+                return adjusted < 0 ? adjusted + 18 : adjusted;
+            }
+
+            function checkWin(player) {
+                const houses = Array.from(document.querySelectorAll(".house")).filter(h => 
+                    h.style.backgroundColor === (player === "red" ? "#ff4d4d" : "#4dff4d")
+                );
+                const positions = houses.map(h => ({
+                    circle: h.dataset.circle,
+                    index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                }));
+
+                const checkPattern = {
+                    1: () => { // H shape
+                        for (let i = 0; i < 18; i++) {
+                            if (positions.some(p => p.circle === "A" && p.index === i) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 1) % 18) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 2) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 1) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === i) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 1) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 2) % 18)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    2: () => { // I shape
+                        for (let i = 0; i < 18; i++) {
+                            if (positions.some(p => p.circle === "A" && p.index === i) &&
+                                positions.some(p => p.circle === "B" && p.index === i) &&
+                                positions.some(p => p.circle === "C" && p.index === i)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    3: () => { // Arrow toward center
+                        for (let i = 0; i < 18; i++) {
+                            if (positions.some(p => p.circle === "A" && p.index === i) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 1) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 2) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i - 1 + 18) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i - 2 + 18) % 18)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    4: () => { // Arrow away from center
+                        for (let i = 0; i < 18; i++) {
+                            if (positions.some(p => p.circle === "C" && p.index === i) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 1) % 18) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 2) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i - 1 + 18) % 18) &&
+                                positions.some(p => p.circle === "A" && p.index === (i - 2 + 18) % 18)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    5: () => { // Straight line of 6
+                        for (let i = 0; i < 13; i++) {
+                            if (positions.some(p => p.circle === "A" && p.index === i) &&
+                                positions.some(p => p.circle === "B" && p.index === i) &&
+                                positions.some(p => p.circle === "C" && p.index === i) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 5) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 5) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 5) % 18)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    },
+                    6: () => { // Mercedes-Benz logo
+                        for (let i = 0; i < 18; i++) {
+                            if (positions.some(p => p.circle === "A" && p.index === i) &&
+                                positions.some(p => p.circle === "B" && p.index === i) &&
+                                positions.some(p => p.circle === "C" && p.index === i) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 6) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 6) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 6) % 18) &&
+                                positions.some(p => p.circle === "A" && p.index === (i + 12) % 18) &&
+                                positions.some(p => p.circle === "B" && p.index === (i + 12) % 18) &&
+                                positions.some(p => p.circle === "C" && p.index === (i + 12) % 18)) {
+                                return true;
+                            }
+                        }
+                        return false;
+                    }
+                };
+
+                if (checkPattern[selectedPattern]()) {
+                    stopTimer();
+                    statusText.textContent = `${player === "red" ? "Red" : "Green"} Wins! Pattern ${selectedPattern} Achieved!`;
+                    awaitingRotation = "gameOver";
+                    toggleArrows(null);
+                    return true;
+                }
+                return false;
+            }
+
+            document.getElementById("diceButton").addEventListener("click", function() {
+                if (!gameStarted && (!awaitingRotation || awaitingRotation !== "gameOver")) {
+                    rollDice();
+                }
+            });
+
             document.getElementById("arrowLeft").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
                     rotateCircle("C", -20);
                     awaitingRotation = null;
                     stopTimer();
+                    if (checkWin(currentPlayer)) return;
                     switchPlayer();
                 }
             });
 
             document.getElementById("arrowRight").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
                     rotateCircle("C", 20);
                     awaitingRotation = null;
                     stopTimer();
+                    if (checkWin(currentPlayer)) return;
                     switchPlayer();
                 }
             });
 
             document.getElementById("arrowUp").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
                     rotateCircle("B", -40);
                     rotateCircle("C", -40);
                     awaitingRotation = null;
                     stopTimer();
+                    if (checkWin(currentPlayer)) return;
                     switchPlayer();
                 }
             });
 
             document.getElementById("arrowDown").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
                     rotateCircle("B", 40);
                     rotateCircle("C", 40);
                     awaitingRotation = null;
                     stopTimer();
+                    if (checkWin(currentPlayer)) return;
                     switchPlayer();
                 }
             });
@@ -515,8 +843,10 @@
                 timers.green = initialTime;
                 timerStarted.red = false;
                 timerStarted.green = false;
+                gameStarted = false;
+                document.getElementById("diceButton").classList.remove("disabled");
                 stopTimer();
-                updateStatusText();
+                rollDice();
                 updateTimerDisplay();
                 toggleArrows(null);
                 document.querySelectorAll(".house").forEach(house => house.remove());
@@ -532,7 +862,7 @@
             });
 
             // Initialize game
-            updateStatusText();
+            rollDice();
             updateTimerDisplay();
             toggleArrows(null);
             createHouses();
@@ -544,5 +874,39 @@
             });
         });
     </script>
+
+    <div class="instructions">
+        <h2>How to Play Patternism</h2>
+        <p>Welcome to Patternism, a strategic game of logic and motion! Two players, Red and Green, compete to form a specific pattern on a circular board with three rotating rings (A: outermost ring, B: middle ring, C: innermost ring). Here’s how to play:</p>
+        <p><strong>1. Setting the Pattern:</strong> Before the game begins, click the dice (🎲) in the top-right corner to roll and select one of six winning patterns. Once the first move is made, the pattern is locked until the game is reset.</p>
+        <p><strong>2. Objective:</strong> Players take turns claiming houses (circles on the board) to form the selected pattern. The patterns are:
+            <br>
+            <br>1 <img src="pattern1.png" alt="Pattern 1">
+            <br>
+            <br>2 <img src="pattern2.png" alt="Pattern 2">
+            <br>
+            <br>3 <img src="pattern3.png" alt="Pattern 3">
+            <br>
+            <br>4 <img src="pattern4.png" alt="Pattern 4">
+            <br>
+            <br>5 <img src="pattern5.png" alt="Pattern 5">
+            <br>
+            <br>6 <img src="pattern6.png" alt="Pattern 6">
+            <br>
+            <br>The first player to complete the pattern wins!
+        </p>
+        <p><strong>3. Taking Turns:</strong> Red starts. Click an unclaimed house to claim it with your color (red or green). Each player has 30 minutes total, tracked by the timers. The current player’s turn is shown in the status bar.</p>
+        <p><strong>4. Claiming Houses:</strong>
+            <ul>
+                <li>On Ring A: Claim a house, and your turn ends immediately.</li>
+                <li>On Ring B or C: Claim a house, then rotate the ring using the arrow buttons (⬅️➡️ for C, ⬆️⬇️ for B). Ring B rotates both B and C together.</li>
+            </ul>
+        </p>
+        <p><strong>5. Rotating Rings:</strong> After claiming a house on B or C, use the enabled arrows to rotate the ring(s) by fixed increments (20° for left/right arrows, 40° for up/down arrows). This aligns pieces toward the target pattern. Only the current player can rotate.</p>
+        <p><strong>6. Winning:</strong> The game checks for the selected pattern after each move or rotation. If a player forms the pattern, they win, and the game ends. Detecting the winning position is the responsibility of the player. The game continues until a player finds the pattern. It is possible that you have made the pattern but because you did not see it, the game resumes and your opponent may win. If a timer runs out, the other player wins.</p>
+        <p><strong>7. Computer Mode:</strong> Toggle "Computer Mode" to play against an AI as Green. The computer makes strategic moves and rotations toward the selected pattern.</p>
+        <p><strong>8. Resetting:</strong> Click "Reset Game" to start over, clearing the board, resetting timers, and allowing a new pattern roll.</p>
+        <p>Enjoy the challenge of aligning your pieces while thwarting your opponent. Good luck!</p>
+    </div>
 </body>
 </html>
