@@ -14,11 +14,9 @@
             color: #333;
             margin: 0;
             padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             position: relative;
+            display: block;
         }
         .header {
             position: absolute;
@@ -30,16 +28,19 @@
             color: #333;
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        .header .title {
+        .logo {
             display: block;
-            font-size: clamp(18px, 4vw, 24px);
-            font-weight: 700;
+            width: clamp(100px, 13.3vw, 133px);
+            height: auto;
+            margin-top: 5px;
         }
-        .header .title span:nth-child(odd) {
-            color: #ff4d4d; /* Red for P, T, E, N, S */
-        }
-        .header .title span:nth-child(even) {
-            color: #4dff4d; /* Green for A, T, R, I, M */
+        .tagline {
+            display: block;
+            font-size: clamp(12px, 2.5vw, 16px);
+            font-weight: 400;
+            color: #666;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            margin-top: 5px;
         }
         .container {
             display: flex;
@@ -49,6 +50,7 @@
             width: 100%;
             align-items: center;
             flex-wrap: wrap;
+            margin: 120px auto 20px;
         }
         .left-panel {
             display: flex;
@@ -209,6 +211,124 @@
             background: linear-gradient(90deg, #7171f8, #2626dc);
             box-shadow: 0 8px 20px rgba(77,77,255,0.6);
         }
+        .claim-btn {
+            padding: 10px 20px;
+            font-size: clamp(12px, 3vw, 16px);
+            background: linear-gradient(90deg, #10b981, #047857);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .claim-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(90deg, #34d399, #059669);
+            box-shadow: 0 8px 20px rgba(16,185,129,0.6);
+        }
+        .claim-btn.flash {
+            animation: flash 1s infinite;
+        }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .dice-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: center;
+        }
+        .dice-btn {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(145deg, #fff, #ccc);
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .dice-btn:hover:not(.disabled) {
+            transform: scale(1.1);
+            background: linear-gradient(145deg, #f0f0f0, #bbb);
+        }
+        .dice-btn.disabled {
+            background: #999;
+            cursor: not-allowed;
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.3);
+            transform: none;
+        }
+        .pattern-display {
+            margin-top: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .pattern-number {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+        .pattern-image {
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+            display: block;
+        }
+        .instructions {
+            text-align: left;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            color: #333;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .instructions h2 {
+            font-size: clamp(20px, 5vw, 28px);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        .instructions p {
+            font-size: clamp(14px, 3vw, 18px);
+            line-height: 1.5;
+            margin: 10px 0;
+        }
+        .instructions img {
+            width: 60px;
+            height: 60px;
+            vertical-align: middle;
+            margin: 0 5px;
+        }
+        .ring-label {
+            position: absolute;
+            font-size: clamp(6px, 1.5vw, 8px);
+            font-weight: 600;
+            color: #333;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.7);
+            pointer-events: none;
+        }
+        .ring-label.A {
+            top: 8.5%;
+            left: 51%;
+            transform: translateX(-50%);
+        }
+        .ring-label.B {
+            top: 18.5%;
+            left: 51%;
+            transform: translateX(-50%);
+        }
+        .ring-label.C {
+            top: 28.5%;
+            left: 51%;
+            transform: translateX(-50%);
+        }
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -234,6 +354,10 @@
             .arrow {
                 margin: 5px;
             }
+            .dice-container {
+                top: 120px;
+                right: 10px;
+            }
         }
         @media (max-width: 400px) {
             body {
@@ -252,16 +376,42 @@
                 top: 5px;
                 left: 5px;
             }
+            .dice-container {
+                top: 100px;
+                right: 5px;
+            }
+            .dice-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            .pattern-image {
+                width: 80px;
+                height: 80px;
+            }
+            .logo {
+                width: clamp(80px, 13.3vw, 107px);
+            }
+            .instructions img {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="header">
-        FiouriT presents:
-        <span class="title">
-            <span>P</span><span>A</span><span>T</span><span>T</span><span>E</span><span>R</span><span>N</span><span>I</span><span>S</span><span>M</span>
-        </span>
+        FiouriT mindstyle
+        <img class="logo" src="/images/Patternism - Logo.jpg" alt="Patternism Logo">
+        <span class="tagline">Logic in Motion...</span>
+    </div>
+    <div class="dice-container">
+        <button class="dice-btn" id="diceButton">🎲</button>
+        <div class="pattern-display" id="patternDisplay">
+            <div class="pattern-number" id="patternNumber">Roll the dice!</div>
+            <img class="pattern-image" id="patternImage" src="" alt="Pattern">
+        </div>
     </div>
     <div class="container">
         <div class="left-panel">
@@ -272,11 +422,15 @@
             </div>
             <button class="reset-btn" id="resetButton">Reset Game</button>
             <button class="computer-toggle" id="computerToggle">Computer Mode: Off</button>
+            <button class="claim-btn" id="claimButton">I Made the Pattern</button>
         </div>
         <div class="board" id="gameBoard">
             <div class="circle A" id="circleA"></div>
             <div class="circle B" id="circleB"></div>
             <div class="circle C" id="circleC"></div>
+            <div class="ring-label A">A (Outermost Ring)</div>
+            <div class="ring-label B">B (Middle Ring)</div>
+            <div class="ring-label C">C (Innermost Ring)</div>
         </div>
         <div class="controls">
             <div class="arrow" id="arrowRight">➡️</div>
@@ -297,12 +451,48 @@
             let timerInterval = null;
             let timerStarted = { red: false, green: false };
             let computerMode = false;
+            let selectedPattern = null;
+            let gameStarted = false;
+
+            const patternImages = {
+                1: "/images/pattern1.jpg",
+                2: "/images/pattern2.jpg",
+                3: "/images/pattern3.jpg",
+                4: "/images/pattern4.jpg",
+                5: "/images/pattern5.jpg",
+                6: "/images/pattern6.jpg"
+            };
+
+            const targetPatterns = {
+                1: ["A0", "B0", "C0", "B1", "A2", "B2", "C2"], // Pattern 1: A1, B1, C1, B2, A3, B3, C3
+                2: ["A0", "B0", "C0"], // Placeholder: Vertical stack
+                3: ["A0", "B1", "C2"], // Placeholder: Diagonal inward
+                4: ["C0", "B1", "A2"], // Placeholder: Diagonal outward
+                5: ["A0", "B0", "C0", "A5", "B5", "C5"], // Placeholder: Line of 6
+                6: ["A0", "B0", "C0", "A6", "B6", "C6", "A12", "B12", "C12"] // Placeholder: Mercedes-Benz
+            };
+
+            function rollDice() {
+                if (!gameStarted) {
+                    selectedPattern = Math.floor(Math.random() * 6) + 1;
+                    updatePatternDisplay();
+                    updateStatusText();
+                }
+            }
+
+            function updatePatternDisplay() {
+                const patternNumber = document.getElementById("patternNumber");
+                const patternImage = document.getElementById("patternImage");
+                patternNumber.textContent = `Pattern ${selectedPattern}`;
+                patternImage.src = patternImages[selectedPattern];
+                patternImage.alt = `Pattern ${selectedPattern}`;
+            }
 
             function updateStatusText() {
                 if (awaitingRotation) {
                     statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}, Rotate ${awaitingRotation === "B" ? "Up/Down" : "Left/Right"}`;
-                } else {
-                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}'s Turn`;
+                } else if (selectedPattern) {
+                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"}'s Turn (Pattern ${selectedPattern})`;
                 }
                 statusText.style.color = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
             }
@@ -359,6 +549,7 @@
                         house.dataset.circle = circle;
                         house.dataset.index = i;
                         house.textContent = i + 1;
+                        console.log(`House ${i + 1}: ${circle}, index ${i}`);
                         house.addEventListener("click", function () {
                             if (!house.style.backgroundColor && !awaitingRotation && timers[currentPlayer] > 0) {
                                 claimHouse(house, circle);
@@ -373,17 +564,31 @@
                 house.style.backgroundColor = currentPlayer === "red" ? "#ff4d4d" : "#4dff4d";
                 house.style.opacity = "1";
                 house.classList.add("claimed");
+                gameStarted = true;
+                document.getElementById("diceButton").classList.add("disabled");
                 if (circle === "A") {
                     stopTimer();
+                    if (computerMode && currentPlayer === "green" && checkWin("green")) {
+                        handleComputerWin();
+                        return;
+                    }
                     switchPlayer();
                 } else {
                     awaitingRotation = circle;
                     updateStatusText();
                     toggleArrows(circle);
                     if (computerMode && currentPlayer === "green") {
-                        setTimeout(computerRotate, 1000); // Computer handles rotation
+                        setTimeout(computerRotate, 1000);
                     }
                 }
+            }
+
+            function handleComputerWin() {
+                stopTimer();
+                statusText.textContent = "Green Wins! Pattern Achieved!";
+                document.getElementById("claimButton").classList.add("flash");
+                awaitingRotation = "gameOver";
+                toggleArrows(null);
             }
 
             function switchPlayer() {
@@ -394,37 +599,143 @@
                 } else {
                     startTimer(currentPlayer);
                 }
+                awaitingRotation = null;
+                toggleArrows(null);
                 updateStatusText();
                 if (computerMode && currentPlayer === "green" && !awaitingRotation) {
                     setTimeout(computerMove, 1000);
                 }
             }
 
+            function evaluateMoveScore(house) {
+                const circle = house.dataset.circle;
+                const index = parseInt(house.dataset.index);
+                const adjustedIndex = getAdjustedIndex(circle, index);
+                const target = targetPatterns[selectedPattern];
+                let score = 0;
+
+                if (target.some(pos => pos === `${circle}${adjustedIndex}`)) {
+                    score += 2;
+                }
+
+                const greenHouses = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#4dff4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                greenHouses.forEach(h => {
+                    if (h.circle === circle && Math.abs(h.index - adjustedIndex) <= 2) {
+                        score += 1;
+                    }
+                });
+
+                const redHouses = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#ff4d4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                if (redHouses.some(h => h.circle === circle && Math.abs(h.index - adjustedIndex) <= 1)) {
+                    score += 1.5;
+                }
+
+                return score;
+            }
+
             function computerMove() {
                 const houses = Array.from(document.querySelectorAll(".house")).filter(h => !h.style.backgroundColor);
-                if (houses.length > 0) {
+                if (houses.length === 0) return;
+
+                let bestHouse = null;
+                let bestScore = -1;
+
+                houses.forEach(house => {
+                    const score = evaluateMoveScore(house);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestHouse = house;
+                    }
+                });
+
+                if (bestHouse) {
+                    claimHouse(bestHouse, bestHouse.dataset.circle);
+                } else {
                     const house = houses[Math.floor(Math.random() * houses.length)];
                     claimHouse(house, house.dataset.circle);
                 }
             }
 
             function computerRotate() {
+                if (!awaitingRotation) return;
+
+                const greenHouses = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#4dff4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                const redHouses = Array.from(document.querySelectorAll(".house"))
+                    .filter(h => h.style.backgroundColor === "#ff4d4d")
+                    .map(h => ({
+                        circle: h.dataset.circle,
+                        index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                    }));
+                const target = targetPatterns[selectedPattern];
+
+                let bestRotation = 0;
+                let bestScore = -1;
+                const rotationOptions = awaitingRotation === "B" ? [-40, 0, 40] : [-20, 0, 20];
+
+                rotationOptions.forEach(rotation => {
+                    let tempRotations = { ...rotations };
+                    if (awaitingRotation === "B") {
+                        tempRotations.B += rotation;
+                        tempRotations.C += rotation;
+                    } else {
+                        tempRotations.C += rotation;
+                    }
+
+                    let score = 0;
+                    greenHouses.forEach(house => {
+                        const adjustedIndex = getAdjustedIndex(house.circle, parseInt(house.dataset.index), tempRotations[house.circle]);
+                        if (target.some(pos => pos === `${house.circle}${adjustedIndex}`)) {
+                            score += 2;
+                        }
+                    });
+                    redHouses.forEach(house => {
+                        const adjustedIndex = getAdjustedIndex(house.circle, parseInt(house.dataset.index), tempRotations[house.circle]);
+                        if (target.some(pos => pos === `${house.circle}${adjustedIndex}`)) {
+                            score -= 1.5;
+                        }
+                    });
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestRotation = rotation;
+                    }
+                });
+
                 if (awaitingRotation === "B") {
-                    const direction = Math.random() < 0.5 ? -40 : 40;
-                    rotateCircle("B", direction);
-                    rotateCircle("C", direction);
-                } else if (awaitingRotation === "C") {
-                    const direction = Math.random() < 0.5 ? -20 : 20;
-                    rotateCircle("C", direction);
+                    rotateCircle("B", bestRotation);
+                    rotateCircle("C", bestRotation);
+                } else {
+                    rotateCircle("C", bestRotation);
                 }
+
                 awaitingRotation = null;
                 stopTimer();
+                if (checkWin("green")) {
+                    handleComputerWin();
+                    return;
+                }
                 switchPlayer();
             }
 
             function rotateCircle(circle, degrees) {
                 rotations[circle] += degrees;
                 document.getElementById(`circle${circle}`).style.transform = `rotate(${rotations[circle]}deg)`;
+                console.log(`Rotated ${circle} by ${degrees}°, new rotation: ${rotations[circle]}`);
             }
 
             function toggleArrows(circle) {
@@ -432,12 +743,12 @@
                 const right = document.getElementById("arrowRight");
                 const up = document.getElementById("arrowUp");
                 const down = document.getElementById("arrowDown");
-                if (circle === "B" && currentPlayer === "red") { // Only enable for Red
+                if (circle === "B") {
                     left.classList.add("disabled");
                     right.classList.add("disabled");
                     up.classList.remove("disabled");
                     down.classList.remove("disabled");
-                } else if (circle === "C" && currentPlayer === "red") { // Only enable for Red
+                } else if (circle === "C") {
                     left.classList.remove("disabled");
                     right.classList.remove("disabled");
                     up.classList.add("disabled");
@@ -450,8 +761,53 @@
                 }
             }
 
+            function getAdjustedIndex(circle, index, tempRotation = rotations[circle]) {
+                const rotation = tempRotation;
+                const step = 360 / 18;
+                let adjusted = (index + Math.round(rotation / step)) % 18;
+                adjusted = adjusted < 0 ? adjusted + 18 : adjusted;
+                console.log(`Adjusted ${circle}${index} to ${adjusted} with rotation ${rotation}`);
+                return adjusted;
+            }
+
+            function checkWin(player) {
+                console.log(`Checking win for ${player}, rotations:`, rotations);
+                const houses = Array.from(document.querySelectorAll(".house")).filter(h => 
+                    h.style.backgroundColor === (player === "red" ? "#ff4d4d" : "#4dff4d")
+                );
+                if (houses.length < 7) return false; // Pattern 1 requires 7 houses
+
+                const positions = houses.map(h => ({
+                    circle: h.dataset.circle,
+                    index: getAdjustedIndex(h.dataset.circle, parseInt(h.dataset.index))
+                }));
+
+                const target = targetPatterns[selectedPattern];
+                for (let start = 0; start < 18; start++) {
+                    let matches = {};
+                    for (let i = 0; i < target.length; i++) {
+                        const targetCircle = target[i][0];
+                        const targetIndex = parseInt(target[i].slice(1));
+                        const shiftedIndex = (targetIndex + start) % 18;
+                        const key = `${targetCircle}${shiftedIndex}`;
+                        matches[key] = positions.some(pos => pos.circle === targetCircle && pos.index === shiftedIndex);
+                    }
+                    if (Object.values(matches).every(Boolean)) {
+                        console.log(`Pattern matched with rotation shift ${start}`);
+                        return true; // All required positions match
+                    }
+                }
+                return false;
+            }
+
+            document.getElementById("diceButton").addEventListener("click", function() {
+                if (!gameStarted && (!awaitingRotation || awaitingRotation !== "gameOver")) {
+                    rollDice();
+                }
+            });
+
             document.getElementById("arrowLeft").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
                     rotateCircle("C", -20);
                     awaitingRotation = null;
                     stopTimer();
@@ -460,7 +816,7 @@
             });
 
             document.getElementById("arrowRight").addEventListener("click", function() {
-                if (awaitingRotation === "C" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "C" && !this.classList.contains("disabled")) {
                     rotateCircle("C", 20);
                     awaitingRotation = null;
                     stopTimer();
@@ -469,7 +825,7 @@
             });
 
             document.getElementById("arrowUp").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
                     rotateCircle("B", -40);
                     rotateCircle("C", -40);
                     awaitingRotation = null;
@@ -479,7 +835,7 @@
             });
 
             document.getElementById("arrowDown").addEventListener("click", function() {
-                if (awaitingRotation === "B" && !this.classList.contains("disabled") && currentPlayer === "red") {
+                if (awaitingRotation === "B" && !this.classList.contains("disabled")) {
                     rotateCircle("B", 40);
                     rotateCircle("C", 40);
                     awaitingRotation = null;
@@ -506,8 +862,11 @@
                 timers.green = initialTime;
                 timerStarted.red = false;
                 timerStarted.green = false;
+                gameStarted = false;
+                document.getElementById("diceButton").classList.remove("disabled");
+                document.getElementById("claimButton").classList.remove("flash");
                 stopTimer();
-                updateStatusText();
+                rollDice();
                 updateTimerDisplay();
                 toggleArrows(null);
                 document.querySelectorAll(".house").forEach(house => house.remove());
@@ -522,18 +881,63 @@
                 }
             });
 
-            // Initialize game
-            updateStatusText();
+            document.getElementById("claimButton").addEventListener("click", function() {
+                if (awaitingRotation === "gameOver") return;
+                if (checkWin(currentPlayer)) {
+                    stopTimer();
+                    statusText.textContent = `${currentPlayer === "red" ? "Red" : "Green"} Wins! Pattern Achieved!`;
+                    awaitingRotation = "gameOver";
+                    toggleArrows(null);
+                } else {
+                    statusText.textContent = "Pattern not achieved! Keep trying.";
+                    setTimeout(updateStatusText, 2000);
+                }
+            });
+
+            rollDice();
             updateTimerDisplay();
             toggleArrows(null);
             createHouses();
 
-            // Handle resize
             window.addEventListener("resize", () => {
                 document.querySelectorAll(".house").forEach(house => house.remove());
                 createHouses();
             });
         });
     </script>
+
+    <div class="instructions">
+        <h2>How to Play Patternism</h2>
+        <p>Welcome to Patternism, a strategic game of logic and motion! Two players, Red and Green, compete to form a specific pattern on a circular board with three rotating rings (A: outermost ring, B: middle ring, C: innermost ring). Here’s how to play:</p>
+        <p><strong>1. Setting the Pattern:</strong> Before the game begins, click the dice (🎲) in the top-right corner to roll and select one of six winning patterns. Once the first move is made, the pattern is locked until the game is reset.</p>
+        <p><strong>2. Objective:</strong> Players take turns claiming houses (circles on the board) to form the selected pattern. The patterns are:
+            <br>
+            <br>1 <img src="/images/pattern1.jpg" alt="Pattern 1">
+            <br>
+            <br>2 <img src="/images/pattern2.jpg" alt="Pattern 2">
+            <br>
+            <br>3 <img src="/images/pattern3.jpg" alt="Pattern 3">
+            <br>
+            <br>4 <img src="/images/pattern4.jpg" alt="Pattern 4">
+            <br>
+            <br>5 <img src="/images/pattern5.jpg" alt="Pattern 5">
+            <br>
+            <br>6 <img src="/images/pattern6.jpg" alt="Pattern 6">
+            <br>
+            <br>The first player to complete the pattern wins!
+        </p>
+        <p><strong>3. Taking Turns:</strong> Red starts. Click an unclaimed house to claim it with your color (red or green). Each player has 30 minutes total, tracked by the timers. The current player’s turn is shown in the status bar.</p>
+        <p><strong>4. Claiming Houses:</strong>
+            <ul>
+                <li>On Ring A: Claim a house, and your turn ends immediately.</li>
+                <li>On Ring B or C: Claim a house, then rotate the ring using the arrow buttons (⬅️➡️ for C, ⬆️⬇️ for B). Ring B rotates both B and C together.</li>
+            </ul>
+        </p>
+        <p><strong>5. Rotating Rings:</strong> After claiming a house on B or C, use the enabled arrows to rotate the ring(s) by fixed increments (20° for left/right arrows, 40° for up/down arrows). This aligns pieces toward the target pattern. Only the current player can rotate.</p>
+        <p><strong>6. Winning:</strong> When you think you’ve formed the pattern, click "I Made the Pattern" to claim victory. The game checks your claim. In Computer Mode, the computer auto-claims if it achieves the pattern (flashing the button). If a timer runs out, the other player wins.</p>
+        <p><strong>7. Computer Mode:</strong> Toggle "Computer Mode" to play against an AI as Green. The computer makes strategic moves and rotations toward the selected pattern.</p>
+        <p><strong>8. Resetting:</strong> Click "Reset Game" to start over, clearing the board, resetting timers, and allowing a new pattern roll.</p>
+        <p>Enjoy the challenge of aligning your pieces while thwarting your opponent. Good luck!</p>
+    </div>
 </body>
 </html>
