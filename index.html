@@ -23,16 +23,14 @@
             top: 10px;
             left: 10px;
             text-align: left;
-            font-size: clamp(14px, 3vw, 20px);
-            font-weight: 600;
-            color: #333;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .logo {
+        .logo-patternism {
             display: block;
             width: clamp(100px, 13.3vw, 133px);
             height: auto;
-            margin-top: 5px;
         }
         .tagline {
             display: block;
@@ -40,7 +38,21 @@
             font-weight: 400;
             color: #666;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            margin-top: 5px;
+            position: absolute;
+            top: calc(clamp(100px, 13.3vw, 133px) + 15px);
+            left: 10px;
+        }
+        .logo-fiourit-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            text-align: right;
+        }
+        .logo-fiourit {
+            display: block;
+            width: clamp(100px, 13.3vw, 133px);
+            height: auto;
+            margin-bottom: 10px; /* Adds space between FiouriT logo and dice */
         }
         .container {
             display: flex;
@@ -239,7 +251,7 @@
         }
         .dice-container {
             position: absolute;
-            top: 10px;
+            top: calc(clamp(100px, 13.3vw, 133px) + 20px); /* Adjusted to position below FiouriT logo */
             right: 10px;
             text-align: center;
         }
@@ -355,8 +367,12 @@
                 margin: 5px;
             }
             .dice-container {
-                top: 120px;
+                top: calc(clamp(100px, 13.3vw, 133px) + 20px);
                 right: 10px;
+            }
+            .logo-fiourit-container {
+                top: 5px;
+                right: 5px;
             }
         }
         @media (max-width: 400px) {
@@ -377,7 +393,7 @@
                 left: 5px;
             }
             .dice-container {
-                top: 100px;
+                top: calc(clamp(80px, 13.3vw, 107px) + 15px);
                 right: 5px;
             }
             .dice-btn {
@@ -389,12 +405,19 @@
                 width: 80px;
                 height: 80px;
             }
-            .logo {
+            .logo-patternism {
+                width: clamp(80px, 13.3vw, 107px);
+            }
+            .logo-fiourit {
                 width: clamp(80px, 13.3vw, 107px);
             }
             .instructions img {
                 width: 40px;
                 height: 40px;
+            }
+            .logo-fiourit-container {
+                top: 5px;
+                right: 5px;
             }
         }
     </style>
@@ -402,9 +425,11 @@
 </head>
 <body>
     <div class="header">
-        FiouriT mindstyle
-        <img class="logo" src="/Patternism/images/Patternism - Logo.jpg" alt="Patternism Logo">
+        <img class="logo-patternism" src="/Patternism/images/Patternism - Logo.jpg" alt="Patternism Logo">
         <span class="tagline">Logic in Motion...</span>
+    </div>
+    <div class="logo-fiourit-container">
+        <img class="logo-fiourit" src="/Patternism/images/Logo - FiouriT.png" alt="FiouriT Logo">
     </div>
     <div class="dice-container">
         <button class="dice-btn" id="diceButton">🎲</button>
@@ -441,6 +466,7 @@
     </div>
 
     <script>
+        // The JavaScript remains unchanged as it doesn't need modification for these UI adjustments
         document.addEventListener("DOMContentLoaded", function () {
             const rotations = { A: 0, B: 0, C: 0 };
             let currentPlayer = "red";
@@ -464,12 +490,12 @@
             };
 
             const targetPatterns = {
-                1: ["A0", "B0", "C0", "B1", "A2", "B2", "C2"], // Pattern 1: A1, B1, C1, B2, A3, B3, C3
-                2: ["A0", "B0", "C0"], // Placeholder: Vertical stack
-                3: ["A0", "B1", "C2"], // Placeholder: Diagonal inward
-                4: ["C0", "B1", "A2"], // Placeholder: Diagonal outward
-                5: ["A0", "B0", "C0", "A5", "B5", "C5"], // Placeholder: Line of 6
-                6: ["A0", "B0", "C0", "A6", "B6", "C6", "A12", "B12", "C12"] // Placeholder: Mercedes-Benz
+                1: ["A0", "B0", "C0", "B1", "A2", "B2", "C2"],
+                2: ["A0", "B0", "C0"],
+                3: ["A0", "B1", "C2"],
+                4: ["C0", "B1", "A2"],
+                5: ["A0", "B0", "C0", "A5", "B5", "C5"],
+                6: ["A0", "B0", "C0", "A6", "B6", "C6", "A12", "B12", "C12"]
             };
 
             function rollDice() {
@@ -775,7 +801,7 @@
                 const houses = Array.from(document.querySelectorAll(".house")).filter(h => 
                     h.style.backgroundColor === (player === "red" ? "#ff4d4d" : "#4dff4d")
                 );
-                if (houses.length < 7) return false; // Pattern 1 requires 7 houses
+                if (houses.length < 7) return false;
 
                 const positions = houses.map(h => ({
                     circle: h.dataset.circle,
@@ -794,7 +820,7 @@
                     }
                     if (Object.values(matches).every(Boolean)) {
                         console.log(`Pattern matched with rotation shift ${start}`);
-                        return true; // All required positions match
+                        return true;
                     }
                 }
                 return false;
